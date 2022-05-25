@@ -24,6 +24,6 @@ class PostsSpider(scrapy.Spider):
 
     async def parse(self, response):
         print(f"--- a processar o Zome em {response.url} ---")
-        # uso de assincronismo no for...
+        # uso de assincronismo no for... espera pela inserção do insertDocument que é uma função assincrona
         for f in asyncio.as_completed([insertDocument(post) for post in response.css('.mode-view-grid .modulo .modulo_in .z_mod_grupo')]):
             await f

@@ -9,3 +9,4 @@ async def insertDocument(post):
     precoParsed = parse_preco(preco)
 
     await create_edificio_mongodb(name,type,precoParsed)
+    # processar o post e inserir o necessário , aqui embaixo pode ser adicionado também outras bases de dados
