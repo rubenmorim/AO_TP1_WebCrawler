@@ -1,28 +1,18 @@
-from scrapy.crawler import CrawlerProcess
-from fastapi import APIRouter
-import sys
+from fastapi import APIRouter,Request
+from spyder.zomeSpyder import PostsSpider
+from scrapyscript import Job, Processor
 
-
-from zomeSpyder import PostsSpider
 
 # Router variable
 crawlerRouter = APIRouter()
 
-
 # importar dados e correr crawler
 @crawlerRouter.get("/api/importar")
-async def import_edificios():
-    try:
-        process = CrawlerProcess()
-        process.crawl(PostsSpider, start_id=14, num_pages=1)
-        # delete reactor instance to let scrap again (bug)
-        if "twisted.internet.reactor" in sys.modules:
-            del sys.modules["twisted.internet.reactor"]
-        process.start()
-    except Exception as e:
-        print(e)
-        return "Ocorreu algum erro"
-    print("Importação Concluida")
+async def import_edificios(request:Request):
+
+    # para poder correr multiplos spiders, sem bloquear o twisted.reactor
+    job = Job(PostsSpider,  start_id=1, num_pages=3)
+    processor = Processor(settings=None)
+    processor.run(job)
+
     return "Importação concluida"
-
-
