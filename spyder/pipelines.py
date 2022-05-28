@@ -1,18 +1,18 @@
 from controllers.edificioController import create_edificio_mongodb
-from config.mongodb import col
-from models.edificio import Edificio
-
+from config.mongodb import colEdificio
+from controllers.edificioController import create_edificio_mongodb
 
 class PostsSpiderPipeline(object):
 
     def __init__(self):
-        self.col = col
+        self.col = colEdificio
 
     def process_item(self, item, spider):
         try:
-            self.col.insert_one(dict(item))
+            create_edificio_mongodb(item["name"],item["type"],item["price"])
         except Exception as e:
             print(e)
+            print("falha ao inserir")
 
-        print("processing")
+
         return item

@@ -35,12 +35,3 @@ class PostsSpider(scrapy.Spider):
                 "type": post.css('.mod_info .mod_info_in .mod_info_loc .mod_info_lc_in .mod_tipo .z_modt_tipo em::text').get()
             }
 
-
-
-        # faz um for a todos e adiciona ao asyncio.gather, só quando todos terminarem é que continua
-        # # asyncio.gather(*[insertDocument(post) for post in response.css('.mode-view-grid .modulo .modulo_in .z_mod_grupo')])
-        # for post in response.css('.mode-view-grid .modulo .modulo_in .z_mod_grupo'):
-        #     insertDocument(post)
-        # loop = asyncio.get_event_loop()
-        # loop.run_until_complete(createPromiseAll(response))
-        # loop.close()
