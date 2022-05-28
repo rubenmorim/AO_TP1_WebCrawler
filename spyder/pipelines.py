@@ -9,10 +9,10 @@ class PostsSpiderPipeline(object):
         self.col = col
 
     def process_item(self, item, spider):
-        aaa = Edificio(name="eeh", type="teste", price=24)
         try:
-            self.col.insert_one(dict(aaa))
+            self.col.insert_one(dict(item))
         except Exception as e:
             print(e)
 
+        print("processing")
         return item

@@ -3,7 +3,6 @@ from config.mongodb import conn
 from schemas.edificioSchema import edificioEntity, edificiosEntity
 
 
-
 async def find_all_edificios_mongodb():
     return edificiosEntity(conn.local.edificio.find())
 
@@ -11,7 +10,7 @@ async def find_all_edificios_mongodb():
 # cria o edificio e retorna o id inserido
 def create_edificio_mongodb(newName, newType, newPrice):
     try:
-        edificio = Edificio(name="eeh", type="teste", price=24)
+        edificio = Edificio(name=newName, type=newType, price=newPrice)
         # upsert with replace_one
         created = conn.local.edificio.replace_one(
             {"name": edificio.name, "type": edificio.type, "price": edificio.price}, dict(edificio), upsert=True)
