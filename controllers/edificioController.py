@@ -1,6 +1,7 @@
 from models.edificio import Edificio
 from config.mongodb import colEdificio
 from config.redisdb import r
+import uuid
 from schemas.edificioSchema import edificioEntity, edificiosEntity
 
 
@@ -36,7 +37,7 @@ def create_edificio_mongodb(newName, newType, newPrice,vendedorID,localizacaoID)
 
 def create_edificio_redis(newName, newType, newPrice):
     try:
-        valueID = newName + "-" + newType + "-" + newPrice
+        valueID = uuid.uuid4().hex
         edificio = {"name": newName, "type": newType, "price": newPrice}
         a = r.hkeys(valueID)
         if (len(a) > 0):
