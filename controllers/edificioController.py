@@ -17,19 +17,21 @@ async def find_all_edificios_redis():
 
 
 # cria o edificio e retorna o id inserido
-def create_edificio_mongodb(newName, newType, newPrice):
+def create_edificio_mongodb(newName, newType, newPrice,vendedorID):
     try:
-        edificio = Edificio(name=newName, type=newType, price=newPrice)
+        edificio = Edificio(name=newName, type=newType, price=newPrice,vendedorID=vendedorID)
         # upsert with replace_one
         created = colEdificio.replace_one(
-            {"name": edificio.name, "type": edificio.type, "price": edificio.price}, dict(edificio), upsert=True)
+            {"name": edificio.name, "type": edificio.type, "price": edificio.price, "vendedorID" : vendedorID}, dict(edificio), upsert=True)
         # verificar o upsert
         if created.matched_count == 1:
             print("Edificio already Inserted")
         else:
             print('Upserted edificio with id:', created.upserted_id)
     except Exception as e:
+        print(e)
         return "Ocorreu algum erro ao inserir Edificio"
+
     return "Edificio Upserted"
 
 

@@ -1,6 +1,6 @@
 import scrapy
 from spyder.pipelines import PostsSpiderPipeline
-from utils.utils import parse_preco
+from utils.utils import parse_preco,parseType
 
 
 class PostsSpider(scrapy.Spider):
@@ -29,9 +29,15 @@ class PostsSpider(scrapy.Spider):
         for post in response.css('.mode-view-grid .modulo .modulo_in .z_mod_grupo'):
             price = post.css('.mod_fim .mod_fim_in .mod_fim_valor::text').get()
             priceParsed = parse_preco(price)
+            edificioType = parseType(post.css('.mod_info .mod_info_in .mod_info_loc .mod_info_lc_in .mod_tipo .z_modt_tipo '
+                                    'em::text').get())
+
+            print(edificioType)
+
             yield{
                 "price":priceParsed,
                 "name": post.css('.mod_info .mod_info_in .mod_info_loc .mod_info_lc_in .mod_tipo .z_modt_tipo::text').get(),
-                "type": post.css('.mod_info .mod_info_in .mod_info_loc .mod_info_lc_in .mod_tipo .z_modt_tipo em::text').get()
+                "type": edificioType,
+                "nameVendedor" : post.css(".z_modc .mod_c_nome::text").get(),
             }
 
