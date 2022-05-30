@@ -5,3 +5,9 @@ def parse_preco(preco):
     else:
         return 0
 
+
+def parseType(type):
+    if type is None:
+        return "No Type"
+
+    return type
