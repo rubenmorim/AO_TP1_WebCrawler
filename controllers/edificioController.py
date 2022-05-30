@@ -38,7 +38,6 @@ def create_edificio_mongodb(newName, newType, newPrice,vendedorID):
 def create_edificio_redis(newName, newType, newPrice):
     try:
         valueID = uuid.uuid4().hex
-        #valueID = newName + "-" + newType + "-" + newPrice
         edificio = {"name": newName, "type": newType, "price": newPrice}
         a = r.hkeys(valueID)
         if (len(a) > 0):
