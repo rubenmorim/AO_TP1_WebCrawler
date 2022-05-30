@@ -8,7 +8,8 @@ def edificioEntity(item) -> dict:
         "name": str(item["name"]),
         "type": str(item["type"]),
         "price": int(item["price"]),
-        "vendedorID": str(item["vendedorID"])
+        "vendedorID": str(item["vendedorID"]),
+        "localizacaoID": str(item["localizacaoID"])
     }
 
 

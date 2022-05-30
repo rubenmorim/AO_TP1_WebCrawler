@@ -6,6 +6,6 @@ class Edificio(BaseModel):
     type:str
     price:int
     vendedorID:str
-    
+    localizacaoID:str
 
 

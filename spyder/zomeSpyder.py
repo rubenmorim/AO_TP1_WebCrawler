@@ -32,12 +32,16 @@ class PostsSpider(scrapy.Spider):
             edificioType = parseType(post.css('.mod_info .mod_info_in .mod_info_loc .mod_info_lc_in .mod_tipo .z_modt_tipo '
                                     'em::text').get())
 
-            print(edificioType)
+
 
             yield{
                 "price":priceParsed,
                 "name": post.css('.mod_info .mod_info_in .mod_info_loc .mod_info_lc_in .mod_tipo .z_modt_tipo::text').get(),
                 "type": edificioType,
                 "nameVendedor" : post.css(".z_modc .mod_c_nome::text").get(),
+                "localizacao": post.css(
+                    '.mod_info .mod_info_in .mod_info_loc .mod_info_lc_in .mod_local span::text').get(),
+                "concelho": post.css(
+                    '.mod_info .mod_info_in .mod_info_loc .mod_info_lc_in .mod_local span em::text').get()
             }
 
