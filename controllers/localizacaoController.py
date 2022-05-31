@@ -32,13 +32,13 @@ def create_localizacao_redis(newLocalizacao, newConcelho):
         valueID = uuid.uuid4().hex
         localizacao = {"localizacao": newLocalizacao, "concelho": newConcelho}
 
-        a = r.hkeys(valueID)
-        if (len(a) > 0):
-            r.hmset(valueID, localizacao)
-            print('Updated localizacao with id:', valueID)
-        else:
-            r.hmset(valueID, localizacao)
-            print('Localizacao inserted')
+        for key in r.scan_iter():
+            if r.hgetall(key) == localizacao:
+                r.hmset(key, localizacao)
+                print('Updated localizacao with id:', key)
+            else:
+                r.hmset(valueID, localizacao)
+                print('Localizacao inserted')
 
     except Exception as e:
         print(e)
