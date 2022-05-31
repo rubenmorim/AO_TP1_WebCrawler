@@ -30,16 +30,20 @@ def create_vendedor_redis(newName):
     try:
         valueID = uuid.uuid4().hex
         vendedor = {"name": newName}
-        for key in r.scan_iter():
-            if r.hgetall(key) == vendedor:
-                r.hmset(key, vendedor)
-                print('Updated vendedor with id:', key)
-            else:
-                r.hmset(valueID, vendedor)
-                print('Vendedor inserted')
-
+        keys = r.keys('*')
+        if keys:
+            for key in r.scan_iter():
+                if r.hgetall(key) == vendedor:
+                    r.hmset(key, vendedor)
+                    print('Updated vendedor with id:', key)
+                    return valueID
+            r.hmset(valueID, vendedor)
+            print('Vendedor inserted')
+            return valueID
+        else:
+            r.hmset(valueID, vendedor)
+            print('Vendedor inserted')
+            return valueID
     except Exception as e:
         print(e)
         return None
-
-    return valueID
