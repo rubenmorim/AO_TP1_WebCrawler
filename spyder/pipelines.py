@@ -15,13 +15,13 @@ class PostsSpiderPipeline(object):
     def process_item(self, item, spider):
         try:
 
-            resultLocalizcaoMongoDB = create_localizacao_mongodb(item["concelho"], item["localizacao"])
-            resultVendedorMongoDB = create_vendedor_mongodb(item["nameVendedor"])
-            create_edificio_mongodb(item["name"], item["type"], item["price"], str(resultVendedorMongoDB), str(resultLocalizcaoMongoDB))
+            # resultLocalizcaoMongoDB = create_localizacao_mongodb(item["concelho"], item["localizacao"])
+            # resultVendedorMongoDB = create_vendedor_mongodb(item["nameVendedor"])
+            # create_edificio_mongodb(item["name"], item["type"], item["price"], str(resultVendedorMongoDB), str(resultLocalizcaoMongoDB))
 
             resultLocalizcaoRedis = create_localizacao_redis(item["concelho"],item["localizacao"])
-            resultVendedorRedis = create_vendedor_redis(item["nameVendedor"])
-            create_edificio_redis(item["name"], item["type"], item["price"], str(resultVendedorRedis), str(resultLocalizcaoRedis))
+            # resultVendedorRedis = create_vendedor_redis(item["nameVendedor"])
+            # create_edificio_redis(item["name"], item["type"], item["price"], str(resultVendedorRedis), str(resultLocalizcaoRedis))
         except Exception as e:
             print(e)
             print("falha ao inserir")

@@ -5,7 +5,6 @@ import uuid
 from schemas.localizacaoSchema import localizacaoEntity, localizacoesEntity
 
 
-
 # cria a localização e retorna o id inserido
 def create_localizacao_mongodb(newLocalizacao, newConcelho):
     try:
@@ -13,16 +12,14 @@ def create_localizacao_mongodb(newLocalizacao, newConcelho):
 
         # upsert with replace_one
         created = colLocalizacao.replace_one(
-            {"localizacao": localizacaoObject.localizacao,"concelho": localizacaoObject.concelho}, dict(localizacaoObject), upsert=True)
-        if created.matched_count == 1:
-            print("Localizacao already Inserted")
-        else:
-            print('Localizacao : ', created.upserted_id)
+            {"localizacao": localizacaoObject.localizacao, "concelho": localizacaoObject.concelho},
+            dict(localizacaoObject), upsert=True)
 
         if created.upserted_id is not None:
             localizacaoID = created.upserted_id
         else:
-            localizacaoID = colLocalizacao.find_one({"concelho": localizacaoObject.concelho,"localizacao":localizacaoObject.localizacao})["_id"]
+            localizacaoID = colLocalizacao.find_one(
+                {"concelho": localizacaoObject.concelho, "localizacao": localizacaoObject.localizacao})["_id"]
 
     except Exception as e:
         print(e)
@@ -34,25 +31,25 @@ def create_localizacao_mongodb(newLocalizacao, newConcelho):
 def create_localizacao_redis(newLocalizacao, newConcelho):
     try:
         valueID = uuid.uuid4().hex
-        localizacao = {"localizacao": newLocalizacao, "concelho": newConcelho}
+        alreadyExists = False
+
+        newConcelhoParsed = newConcelho.replace(u'\xa0', u' ')
+        localizacaoCreated = {"localizacao": newLocalizacao, "concelho": newConcelhoParsed}
+
         keys = r.keys('*')
+
         if keys:
-            for key in r.scan_iter():
-                if r.hgetall(key) == localizacao:
-                    r.hmset(key, localizacao)
-                    print('Updated vendedor with id:', key)
-                    return valueID
-            r.hmset(valueID, localizacao)
-            print('Vendedor inserted')
-            return valueID
-        else:
-            r.hmset(valueID, localizacao)
-            print('Vendedor inserted')
-            return valueID
+            for key in keys:
+                if r.hgetall(key) == localizacaoCreated:
+                    alreadyExists = True
+                    valueID = key
+                    break
+
+        if not alreadyExists:
+            r.hmset(valueID, localizacaoCreated)
+
     except Exception as e:
         print(e)
         return None
 
-
-
-
+    return valueID

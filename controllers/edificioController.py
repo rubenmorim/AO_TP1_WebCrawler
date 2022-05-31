@@ -24,10 +24,10 @@ def create_edificio_mongodb(newName, newType, newPrice,vendedorID,localizacaoID)
         created = colEdificio.replace_one(
             {"name": edificio.name, "type": edificio.type, "price": edificio.price, "vendedorID" : vendedorID,"localizacaoID":localizacaoID}, dict(edificio), upsert=True)
         # verificar o upsert
-        # if created.matched_count == 1:
-        #     print("Edificio already Inserted")
-        # else:
-        #     print('Upserted edificio with id:', created.upserted_id)
+        if created.matched_count == 1:
+            print("Edificio already Inserted")
+        else:
+            print('Upserted edificio with id:', created.upserted_id)
     except Exception as e:
         print(e)
         return "Ocorreu algum erro ao inserir Edificio"
