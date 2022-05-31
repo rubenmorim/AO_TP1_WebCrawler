@@ -39,13 +39,13 @@ def create_edificio_redis(newName, newType, newPrice, vendedorID, localizacaoID)
     try:
         valueID = uuid.uuid4().hex
         edificio = {"name": newName, "type": newType, "price": newPrice, "vendedorID": vendedorID, "localizacaoID": localizacaoID}
-        a = r.hkeys(valueID)
-        if (len(a) > 0):
-            r.hmset(valueID, edificio)
-            print('Updated edificio with id:', valueID)
-        else:
-            r.hmset(valueID, edificio)
-            print('Edificio inserted')
+        for key in r.scan_iter():
+            if r.hgetall(key) == edificio:
+                r.hmset(key, edificio)
+                print('Updated edificio with id:', key)
+            else:
+                r.hmset(valueID, edificio)
+                print('Edificio inserted')
     except Exception as e:
         return "Ocorreu algum erro ao inserir Edificio"
     return "Edificio Upserted"
