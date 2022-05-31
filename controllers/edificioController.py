@@ -35,10 +35,10 @@ def create_edificio_mongodb(newName, newType, newPrice,vendedorID,localizacaoID)
     return "Edificio Upserted"
 
 
-def create_edificio_redis(newName, newType, newPrice):
+def create_edificio_redis(newName, newType, newPrice, vendedorID, localizacaoID):
     try:
         valueID = uuid.uuid4().hex
-        edificio = {"name": newName, "type": newType, "price": newPrice}
+        edificio = {"name": newName, "type": newType, "price": newPrice, "vendedorID": vendedorID, "localizacaoID": localizacaoID}
         a = r.hkeys(valueID)
         if (len(a) > 0):
             r.hmset(valueID, edificio)
