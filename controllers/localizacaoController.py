@@ -42,11 +42,12 @@ def create_localizacao_redis(newLocalizacao, newConcelho):
             for key in keys:
                 if r.hgetall(key) == localizacaoCreated:
                     alreadyExists = True
+                    valueID = key
                     break
 
         if not alreadyExists:
             r.hmset(valueID, localizacaoCreated)
-            print("inserted")
+
     except Exception as e:
         print(e)
         return None
