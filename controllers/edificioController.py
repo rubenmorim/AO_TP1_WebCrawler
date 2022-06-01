@@ -25,9 +25,9 @@ def create_edificio_mongodb(newName, newType, newPrice,vendedorID,localizacaoID)
             {"name": edificio.name, "type": edificio.type, "price": edificio.price, "vendedorID" : vendedorID,"localizacaoID":localizacaoID}, dict(edificio), upsert=True)
         # verificar o upsert
         if created.matched_count == 1:
-            print("Edificio already Inserted")
+            print("MongoDB - Edificio already Inserted")
         else:
-            print('Upserted edificio with id:', created.upserted_id)
+            print('MongoDB - Upserted edificio with id:', created.upserted_id)
     except Exception as e:
         print(e)
         return "Ocorreu algum erro ao inserir Edificio"
@@ -41,10 +41,9 @@ def create_edificio_redis(newName, newType, newPrice, vendedorID, localizacaoID)
         alreadyExists = False
 
         newNameParsed = newName.replace(u' \xa0', u' ')
-        edificioCreated = {"name": newNameParsed, "type": newType, "price": newPrice, "vendedorID": vendedorID, "localizacaoID": localizacaoID}
+        edificioCreated = {"name": newNameParsed, "type": newType, "price": str(newPrice), "vendedorID": vendedorID, "localizacaoID": localizacaoID}
 
         keys = redificio.keys('*')
-
         if keys:
             for key in keys:
                 if redificio.hgetall(key) == edificioCreated:
@@ -54,6 +53,7 @@ def create_edificio_redis(newName, newType, newPrice, vendedorID, localizacaoID)
 
         if not alreadyExists:
             redificio.hmset(valueID, edificioCreated)
+            print("Inseriu edificio redis")
 
     except Exception as e:
         print(e)
