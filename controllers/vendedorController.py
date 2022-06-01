@@ -1,6 +1,6 @@
 from models.vendedor import Vendedor
 from config.mongodb import colVendedor
-from config.redisdb import r
+from config.redisdb import rvendedor
 import uuid
 from schemas.vendedorSchema import vendedorEntity,vendedoresEntity
 
@@ -29,21 +29,24 @@ def create_vendedor_mongodb(newName):
 def create_vendedor_redis(newName):
     try:
         valueID = uuid.uuid4().hex
-        vendedor = {"name": newName}
-        keys = r.keys('*')
+        alreadyExists = False
+
+        vendedorCreated = {"name": newName}
+
+        keys = rvendedor.keys('*')
+
         if keys:
-            for key in r.scan_iter():
-                if r.hgetall(key) == vendedor:
-                    r.hmset(key, vendedor)
-                    print('Updated vendedor with id:', key)
-                    return valueID
-            r.hmset(valueID, vendedor)
-            print('Vendedor inserted')
-            return valueID
-        else:
-            r.hmset(valueID, vendedor)
-            print('Vendedor inserted')
-            return valueID
+            for key in keys:
+                if rvendedor.hgetall(key) == vendedorCreated:
+                    alreadyExists = True
+                    valueID = key
+                    break
+
+        if not alreadyExists:
+            rvendedor.hmset(valueID, vendedorCreated)
+
     except Exception as e:
         print(e)
         return None
+
+    return valueID

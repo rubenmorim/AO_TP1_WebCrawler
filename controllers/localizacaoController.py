@@ -1,6 +1,6 @@
 from models.localizacao import Localizacao
 from config.mongodb import colLocalizacao
-from config.redisdb import r
+from config.redisdb import rlocalizacao
 import uuid
 from schemas.localizacaoSchema import localizacaoEntity, localizacoesEntity
 
@@ -36,17 +36,17 @@ def create_localizacao_redis(newLocalizacao, newConcelho):
         newConcelhoParsed = newConcelho.replace(u'\xa0', u' ')
         localizacaoCreated = {"localizacao": newLocalizacao, "concelho": newConcelhoParsed}
 
-        keys = r.keys('*')
+        keys = rlocalizacao.keys('*')
 
         if keys:
             for key in keys:
-                if r.hgetall(key) == localizacaoCreated:
+                if rlocalizacao.hgetall(key) == localizacaoCreated:
                     alreadyExists = True
                     valueID = key
                     break
 
         if not alreadyExists:
-            r.hmset(valueID, localizacaoCreated)
+            rlocalizacao.hmset(valueID, localizacaoCreated)
 
     except Exception as e:
         print(e)

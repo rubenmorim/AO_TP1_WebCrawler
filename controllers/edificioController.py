@@ -1,6 +1,6 @@
 from models.edificio import Edificio
 from config.mongodb import colEdificio
-from config.redisdb import r
+from config.redisdb import redificio
 import uuid
 from schemas.edificioSchema import edificioEntity, edificiosEntity
 
@@ -11,8 +11,8 @@ async def find_all_edificios_mongodb():
 
 async def find_all_edificios_redis():
     edificios = []
-    for key in r.keys():
-        edificios.append(r.hgetall(key))
+    for key in redificio.keys():
+        edificios.append(redificio.hgetall(key))
     return edificios
 
 
@@ -38,21 +38,25 @@ def create_edificio_mongodb(newName, newType, newPrice,vendedorID,localizacaoID)
 def create_edificio_redis(newName, newType, newPrice, vendedorID, localizacaoID):
     try:
         valueID = uuid.uuid4().hex
-        edificio = {"name": newName, "type": newType, "price": newPrice, "vendedorID": vendedorID, "localizacaoID": localizacaoID}
-        keys = r.keys('*')
+        alreadyExists = False
+
+        newNameParsed = newName.replace(u' \xa0', u' ')
+        edificioCreated = {"name": newNameParsed, "type": newType, "price": newPrice, "vendedorID": vendedorID, "localizacaoID": localizacaoID}
+
+        keys = redificio.keys('*')
+
         if keys:
-            for key in r.scan_iter():
-                if r.hgetall(key) == edificio:
-                    r.hmset(key, edificio)
-                    print('Updated vendedor with id:', key)
-                    return valueID
-            r.hmset(valueID, edificio)
-            print('Vendedor inserted')
-            return valueID
-        else:
-            r.hmset(valueID, edificio)
-            print('Vendedor inserted')
-            return valueID
+            for key in keys:
+                if redificio.hgetall(key) == edificioCreated:
+                    alreadyExists = True
+                    valueID = key
+                    break
+
+        if not alreadyExists:
+            redificio.hmset(valueID, edificioCreated)
+
     except Exception as e:
         print(e)
         return None
+
+    return valueID
